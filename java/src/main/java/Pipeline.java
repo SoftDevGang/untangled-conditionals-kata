@@ -16,7 +16,6 @@ public class Pipeline {
 
     public void run(Project project) {
         boolean testsPassed;
-        boolean deploySuccessful;
 
         if (project.hasTests()) {
             if ("success".equals(project.runTests())) {
@@ -31,17 +30,7 @@ public class Pipeline {
             testsPassed = true;
         }
 
-        if (testsPassed) {
-            if ("success".equals(project.deploy())) {
-                log.info("Deployment successful");
-                deploySuccessful = true;
-            } else {
-                log.error("Deployment failed");
-                deploySuccessful = false;
-            }
-        } else {
-            deploySuccessful = false;
-        }
+        boolean deploySuccessful = deploy(project, testsPassed);
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
@@ -57,5 +46,21 @@ public class Pipeline {
         } else {
             log.info("Email disabled");
         }
+    }
+
+    private boolean deploy(Project project, boolean testsPassed) {
+        boolean deploySuccessful;
+        if (testsPassed) {
+            if ("success".equals(project.deploy())) {
+                log.info("Deployment successful");
+                deploySuccessful = true;
+            } else {
+                log.error("Deployment failed");
+                deploySuccessful = false;
+            }
+        } else {
+            deploySuccessful = false;
+        }
+        return deploySuccessful;
     }
 }
