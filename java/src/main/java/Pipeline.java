@@ -27,7 +27,7 @@ public class Pipeline {
             return;
         }
 
-        boolean deploySuccessful = deploy(project, testsPassed);
+        boolean deploySuccessful = deploy(project);
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
@@ -55,9 +55,7 @@ public class Pipeline {
         }
     }
 
-    private boolean deploy(Project project, boolean testsPassed) {
-        if (!testsPassed) return false;
-
+    private boolean deploy(Project project) {
         if ("success".equals(project.deploy())) {
             log.info("Deployment successful");
             return true;
