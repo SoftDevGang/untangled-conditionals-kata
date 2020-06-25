@@ -21,17 +21,21 @@ public class Pipeline {
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            if (testsPassed) {
-                if (deploySuccessful) {
-                    emailer.send("Deployment completed successfully");
-                } else {
-                    emailer.send("Deployment failed");
-                }
-            } else {
-                emailer.send("Tests failed");
-            }
+            sendEmailNotifications(testsPassed, deploySuccessful);
         } else {
             log.info("Email disabled");
+        }
+    }
+
+    private void sendEmailNotifications(boolean testsPassed, boolean deploySuccessful) {
+        if (testsPassed) {
+            if (deploySuccessful) {
+                emailer.send("Deployment completed successfully");
+            } else {
+                emailer.send("Deployment failed");
+            }
+        } else {
+            emailer.send("Tests failed");
         }
     }
 
