@@ -15,47 +15,39 @@ public class Pipeline {
     }
 
     public void run(Project project) {
-        boolean testsPassed;
-        boolean deploySuccessful;
+        PipelineStatus pipelineStatus = new PipelineStatus();
 
         if (project.hasTests()) {
             if ("success".equals(project.runTests())) {
                 log.info("Tests passed");
-                testsPassed = true;
+                pipelineStatus.setTestsPassed();
             } else {
                 log.error("Tests failed");
-                testsPassed = false;
+                pipelineStatus.setTestsFailed();
             }
         } else {
             log.info("No tests");
-            testsPassed = true;
+            pipelineStatus.setTestsPassed();
         }
 
-        if (testsPassed) {
+        if (pipelineStatus.areTestsPassed()) {
             if ("success".equals(project.deploy())) {
                 log.info("Deployment successful");
-                deploySuccessful = true;
+                pipelineStatus.setDeploySuccess();
             } else {
                 log.error("Deployment failed");
-                deploySuccessful = false;
+                pipelineStatus.setDeployFailed();
             }
         } else {
-            deploySuccessful = false;
+            pipelineStatus.setDeployFailed();
         }
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            if (testsPassed) {
-                if (deploySuccessful) {
-                    emailer.send("Deployment completed successfully");
-                } else {
-                    emailer.send("Deployment failed");
-                }
-            } else {
-                emailer.send("Tests failed");
-            }
+            emailer.send(pipelineStatus.getStatusMessage());
         } else {
             log.info("Email disabled");
         }
     }
+
 }
