@@ -34,7 +34,6 @@ We will have dependencies for `Config, Email, Logging and Project information` l
 
 * if tests passed (or no tests) we deploy the project.
   * we log deploy result (success or failure)
-* if tests did not pass we consider deploy also failed.
 
 * if config is set to send emails, we send email report 
   * when test and deploy passed we email a report of that
