@@ -18,20 +18,18 @@ public class Pipeline {
         boolean testsPassed = runTests(project);
 
         if (!testsPassed) {
-            if (config.sendEmailSummary()) {
-                log.info("Sending email");
-                emailer.send("Tests failed");
-            } else {
-                log.info("Email disabled");
-            }
+            sendEmail("Tests failed");
             return;
         }
 
         boolean deploySuccessful = deploy(project);
 
+        sendEmail(deploySuccessful ? "Deployment completed successfully" : "Deployment failed");
+    }
+
+    private void sendEmail(String message) {
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            String message = deploySuccessful ? "Deployment completed successfully" : "Deployment failed";
             emailer.send(message);
         } else {
             log.info("Email disabled");
