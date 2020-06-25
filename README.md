@@ -22,3 +22,22 @@ However, I recommend you try the kata yourself first, and then review the resour
 
 * Blog Post: [Refactoring — Untangling Conditionals](https://cloudnative.ly/refactoring-untangling-conditionals-cc5693b8ec3c).
 * Video: [![Untangled Conditionals Kata](https://img.youtube.com/vi/NWgY-0Qu4S4/0.jpg)](http://www.youtube.com/watch?v=NWgY-0Qu4S4)
+
+## Requirements
+
+We are creating a spike Pipeline class which controls tour build pipeline.
+We will have dependencies for `Config, Email, Logging and Project information` later.
+
+* If the project has tests we run tests
+  * we log test result (success or failure)
+* if there are no tests we log that there are no tests and proceed
+
+* if tests passed (or no tests) we deploy the project.
+  * we log deploy result (success or failure)
+* if tests did not pass we consider deploy also failed.
+
+* if config is set to send emails, we send email report 
+  * when test and deploy passed we email a report of that
+  * when deploy failed we email a report that
+  * when test failed we email a report that
+  * else we log that email is disabled.
