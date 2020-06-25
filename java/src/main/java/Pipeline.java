@@ -16,14 +16,12 @@ public class Pipeline {
 
     public void run(Project project) {
         boolean testsPassed = runTests(project);
-
         if (!testsPassed) {
             sendEmail("Tests failed");
             return;
         }
 
         boolean deploySuccessful = deploy(project);
-
         sendEmail(deploySuccessful ? "Deployment completed successfully" : "Deployment failed");
     }
 
