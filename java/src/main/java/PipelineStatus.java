@@ -22,14 +22,10 @@ public class PipelineStatus {
         this.deploySuccess = false;
     }
 
-    public boolean isDeploySuccess() {
-        return  this.deploySuccess;
-    }
-
     String getStatusMessage() {
         String message;
         if (areTestsPassed()) {
-            if (isDeploySuccess()) {
+            if (this.deploySuccess) {
                 message = "Deployment completed successfully";
             } else {
                 message = "Deployment failed";

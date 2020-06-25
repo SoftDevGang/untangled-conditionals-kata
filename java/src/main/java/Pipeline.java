@@ -17,19 +17,21 @@ public class Pipeline {
     public void run(Project project) {
         PipelineStatus pipelineStatus = new PipelineStatus();
 
-        if (project.hasTests()) {
-            if ("success".equals(project.runTests())) {
-                log.info("Tests passed");
-                pipelineStatus.setTestsPassed();
-            } else {
-                log.error("Tests failed");
-                pipelineStatus.setTestsFailed();
-            }
-        } else {
-            log.info("No tests");
-            pipelineStatus.setTestsPassed();
-        }
+        handleTests(project, pipelineStatus);
+        handleDeployment(project, pipelineStatus);
+        handleEmail(project, pipelineStatus);
+    }
 
+    private void handleEmail(Project project, PipelineStatus pipelineStatus) {
+        if (config.sendEmailSummary()) {
+            log.info("Sending email");
+            emailer.send(pipelineStatus.getStatusMessage());
+        } else {
+            log.info("Email disabled");
+        }
+    }
+
+    private void handleDeployment(Project project, PipelineStatus pipelineStatus) {
         if (pipelineStatus.areTestsPassed()) {
             if ("success".equals(project.deploy())) {
                 log.info("Deployment successful");
@@ -41,12 +43,20 @@ public class Pipeline {
         } else {
             pipelineStatus.setDeployFailed();
         }
+    }
 
-        if (config.sendEmailSummary()) {
-            log.info("Sending email");
-            emailer.send(pipelineStatus.getStatusMessage());
+    private void handleTests(Project project, PipelineStatus pipelineStatus) {
+        if (project.hasTests()) {
+            if ("success".equals(project.runTests())) {
+                log.info("Tests passed");
+                pipelineStatus.setTestsPassed();
+            } else {
+                log.error("Tests failed");
+                pipelineStatus.setTestsFailed();
+            }
         } else {
-            log.info("Email disabled");
+            log.info("No tests");
+            pipelineStatus.setTestsPassed();
         }
     }
 
