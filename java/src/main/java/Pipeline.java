@@ -31,11 +31,8 @@ public class Pipeline {
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            if (deploySuccessful) {
-                emailer.send("Deployment completed successfully");
-            } else {
-                emailer.send("Deployment failed");
-            }
+            String message = deploySuccessful ? "Deployment completed successfully" : "Deployment failed";
+            emailer.send(message);
         } else {
             log.info("Email disabled");
         }
