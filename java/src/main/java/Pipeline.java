@@ -17,11 +17,21 @@ public class Pipeline {
     public void run(Project project) {
         boolean testsPassed = runTests(project);
 
+        if (!testsPassed) {
+            if (config.sendEmailSummary()) {
+                log.info("Sending email");
+                sendEmailNotifications(false, false);
+            } else {
+                log.info("Email disabled");
+            }
+            return;
+        }
+
         boolean deploySuccessful = deploy(project, testsPassed);
 
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            sendEmailNotifications(testsPassed, deploySuccessful);
+            sendEmailNotifications(true, deploySuccessful);
         } else {
             log.info("Email disabled");
         }
